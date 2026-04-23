@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Match Rush</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="game-card">
+        <section class="game-overlay" id="game-overlay" aria-live="polite">
+          <div class="overlay-panel">
+            <p class="eyebrow">T. Rowe Price Memory Sprint</p>
+            <h1>Match Rush</h1>
+            <p id="overlay-text">16 cards. 30 seconds. Match all 8 pairs before the timer ends.</p>
+            <button id="overlay-button" class="primary-button" type="button">
+              Start Round
+            </button>
+          </div>
+        </section>
+
+        <header class="hud">
+          <div>
+            <p class="label">T. Rowe Price Match Rush</p>
+            <h2>Find The Pairs</h2>
+          </div>
+
+          <div class="timer-ring" aria-live="polite">
+            <span class="label">Time</span>
+            <strong id="timer">30</strong>
+          </div>
+        </header>
+
+        <section class="status-bar">
+          <div class="status-pill">
+            <span class="label">Matches Left</span>
+            <strong id="pairs-left">8</strong>
+          </div>
+        </section>
+
+        <section
+          class="game-board"
+          id="game-board"
+          aria-label="Memory card board"
+        ></section>
+
+        <section class="message-panel" id="message-panel" aria-live="polite">
+          <p id="message-text">Tap start to begin the round.</p>
+        </section>
+      </section>
+    </main>
+
+    <template id="card-template">
+      <button class="memory-card" type="button">
+        <span class="card-face card-front">?</span>
+        <span class="card-face card-back"></span>
+      </button>
+    </template>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
