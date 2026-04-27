@@ -47,8 +47,8 @@ function createDeck(cardCount) {
   const pairCount = cardCount / 2;
   const images = shuffle(CARD_FACE_IMAGES).slice(0, pairCount);
   const deck = images.flatMap((image, pairIndex) => [
-    { id: `${pairIndex}-a`, pairId: pairIndex, image, matched: false },
-    { id: `${pairIndex}-b`, pairId: pairIndex, image, matched: false },
+    { id: `${pairIndex}-a`, pairId: image, image, matched: false },
+    { id: `${pairIndex}-b`, pairId: image, image, matched: false },
   ]);
 
   return shuffle(deck);
