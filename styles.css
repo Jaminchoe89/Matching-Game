@@ -6,6 +6,7 @@
   --magenta: #cb4e85;
   --yellow: #f3d15d;
   --green: #8ebc66;
+  --brand-green: #83df4a;
   --panel: rgba(11, 25, 51, 0.92);
   --panel-strong: rgba(1, 16, 43, 0.96);
   --line: rgba(255, 255, 255, 0.14);
@@ -22,7 +23,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: "Manrope", sans-serif;
+  font-family: "Roboto Flex", sans-serif;
   color: var(--white);
   background:
     radial-gradient(circle at top right, rgba(95, 182, 198, 0.16), transparent 22%),
@@ -55,28 +56,19 @@ body::after {
 }
 
 .app-shell {
-  width: min(100%, 540px);
-  margin: 0 auto;
-  padding: 20px 16px 32px;
+  width: 100vw;
+  height: 100dvh;
 }
 
 .game-card {
   position: relative;
   overflow: hidden;
+  width: 100vw;
+  height: 100dvh;
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow);
-}
-
-.eyebrow,
-.label {
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.72);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .primary-button,
@@ -89,17 +81,27 @@ body::after {
 }
 
 .primary-button {
-  background: linear-gradient(135deg, var(--cyan), var(--magenta));
-  color: var(--white);
+  background: var(--brand-green);
+  color: var(--navy);
   font-weight: 800;
   letter-spacing: 0.02em;
-  box-shadow: 0 14px 26px rgba(95, 182, 198, 0.18);
+  box-shadow: 0 14px 26px rgba(131, 223, 74, 0.24);
 }
 
 .game-card {
-  padding: 18px;
+  --stage-pad: 28px;
+  --hud-height: 92px;
+  --board-gap: 14px;
+  --board-height-fit: calc((100dvh - (var(--stage-pad) * 2) - var(--hud-height) - 22px - (var(--board-gap) * 2)) / 3);
+  --board-width-fit: calc(((100vw - (var(--stage-pad) * 2)) - (var(--board-gap) * 3)) * 7 / 20);
+  --card-height: min(var(--board-height-fit), var(--board-width-fit), 31dvh);
+  --card-width: calc(var(--card-height) * 5 / 7);
+  padding: 28px;
   background:
     linear-gradient(180deg, rgba(11, 25, 51, 0.98), rgba(1, 16, 43, 0.98));
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .game-overlay {
@@ -122,123 +124,112 @@ body::after {
 }
 
 .overlay-panel {
-  width: 100%;
-  padding: 28px 22px 22px;
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--line);
-  background:
-    linear-gradient(180deg, rgba(11, 25, 51, 0.98), rgba(1, 16, 43, 0.98));
-  box-shadow: var(--shadow);
+  width: min(100%, 520px);
+  display: grid;
+  justify-items: center;
+  gap: 18px;
 }
 
-.overlay-panel::after {
-  content: "";
-  position: absolute;
-  right: -34px;
-  top: -46px;
-  width: 160px;
-  height: 160px;
-  border-radius: 0 0 0 42px;
-  background:
-    linear-gradient(180deg, var(--cyan) 0 25%, var(--white) 25% 50%, var(--magenta) 50% 75%, var(--yellow) 75% 100%);
-  opacity: 0.92;
-  transform: rotate(18deg);
+.overlay-message {
+  margin: 0;
+  color: var(--white);
+  text-align: center;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
-.overlay-panel {
-  position: relative;
-  overflow: hidden;
+.game-overlay .primary-button {
+  min-width: min(100%, 420px);
+  min-height: 96px;
+  padding: 24px 40px;
+  font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+  font-weight: 700;
+  border-radius: 999px;
 }
 
-.overlay-panel h1 {
-  position: relative;
-  z-index: 1;
-  margin: 8px 0 10px;
-  font-family: "Fraunces", serif;
-  font-size: clamp(2.2rem, 8vw, 3.4rem);
-  line-height: 0.95;
-}
-
-.overlay-panel p:not(.eyebrow) {
-  position: relative;
-  z-index: 1;
-  margin: 0 0 18px;
-  max-width: 23ch;
-  font-size: 1rem;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.82);
-}
-
-.hud,
-.status-bar {
+.hud {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
+.playfield {
+  width: calc((var(--card-width) * 4) + (var(--board-gap) * 3));
+  max-width: 100%;
+  display: grid;
+  gap: 22px;
+  align-content: center;
+}
+
 .hud h2 {
-  margin: 6px 0 0;
-  font-family: "Fraunces", serif;
-  font-size: 1.8rem;
+  margin: 0;
+  font-size: clamp(1.8rem, 2.2vw, 2.6rem);
+  font-weight: 600;
 }
 
 .timer-ring {
-  min-width: 92px;
-  padding: 12px;
+  --timer-progress: 100%;
+  min-width: 112px;
+  padding: 16px;
+  position: relative;
   display: grid;
   justify-items: center;
+  align-items: center;
   border-radius: 24px;
-  background:
-    radial-gradient(circle at center, var(--navy-soft) 0 42%, transparent 43%),
-    conic-gradient(var(--cyan) 0deg, rgba(95, 182, 198, 0.18) 0deg);
+  overflow: hidden;
+  background: rgba(131, 223, 74, 0.18);
   border: 1px solid var(--line);
 }
 
+.timer-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: var(--timer-progress);
+  background: var(--brand-green);
+  border-radius: 24px 0 0 24px;
+  transition: width 900ms linear;
+}
+
+.timer-ring::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 58px;
+  height: 58px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: var(--navy-soft);
+}
+
 .timer-ring strong {
-  font-size: 1.9rem;
+  position: relative;
+  z-index: 1;
+  font-size: 2.4rem;
   line-height: 1;
   color: var(--white);
 }
 
-.status-bar {
-  margin-top: 16px;
-}
-
-.status-pill {
-  flex: 1;
-  padding: 12px 14px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--line);
-}
-
-.status-pill strong {
-  display: block;
-  margin-top: 4px;
-  font-size: 1.15rem;
-  color: var(--white);
-}
-
-.ghost-button {
-  background: rgba(142, 188, 102, 0.16);
-  color: var(--white);
-  border: 1px solid rgba(142, 188, 102, 0.38);
-  font-weight: 800;
-  padding-inline: 18px;
-}
-
 .game-board {
-  margin-top: 18px;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(4, var(--card-width));
+  grid-template-rows: repeat(3, var(--card-height));
+  gap: var(--board-gap);
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto;
 }
 
 .memory-card {
   position: relative;
-  aspect-ratio: 0.74;
-  border-radius: 18px;
+  width: var(--card-width);
+  height: var(--card-height);
+  border-radius: 20px;
   border: none;
   padding: 0;
   transform-style: preserve-3d;
@@ -257,51 +248,52 @@ body::after {
 .card-face {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 18px;
+  border-radius: 20px;
   backface-visibility: hidden;
-  font-size: clamp(1.5rem, 8vw, 2.3rem);
-  font-weight: 800;
   box-shadow: 0 8px 18px rgba(33, 44, 36, 0.12);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .card-front {
-  background:
-    linear-gradient(135deg, rgba(95, 182, 198, 0.4), rgba(1, 16, 43, 0.9)),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
-  color: var(--white);
-  border: 1px solid rgba(95, 182, 198, 0.26);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .card-back {
   transform: rotateY(180deg);
-  background: linear-gradient(145deg, var(--white), rgba(255, 255, 255, 0.94));
-  color: var(--navy);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .memory-card.matched .card-back {
-  background: linear-gradient(145deg, var(--yellow), var(--green));
-  color: var(--navy);
+  border-color: rgba(131, 223, 74, 0.55);
 }
 
-.message-panel {
-  margin-top: 16px;
-  padding: 14px 16px;
-  border-radius: 18px;
-  background:
-    linear-gradient(90deg, rgba(203, 78, 133, 0.18), rgba(95, 182, 198, 0.14));
-  color: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--line);
-  min-height: 72px;
-  display: flex;
-  align-items: center;
-}
+@media (max-width: 900px) {
+  .app-shell {
+    width: 100%;
+    height: 100dvh;
+  }
 
-.message-panel p {
-  margin: 0;
-  line-height: 1.45;
+  .game-card {
+    --stage-pad: 18px;
+    --hud-height: 74px;
+    --board-gap: 10px;
+    --card-height: min(var(--board-height-fit), var(--board-width-fit), 24dvh);
+    width: 100%;
+    height: 100dvh;
+    aspect-ratio: auto;
+    padding: 18px;
+  }
+
+  .playfield {
+    gap: 16px;
+  }
+
+  .overlay-panel {
+    width: 100%;
+    padding: 26px 24px 22px;
+  }
 }
 
 @media (max-width: 420px) {
@@ -310,11 +302,21 @@ body::after {
   }
 
   .overlay-panel {
-    padding: 24px 18px 18px;
+    padding: 22px 18px 18px;
   }
 
   .timer-ring {
     min-width: 82px;
+    padding: 12px;
+  }
+
+  .timer-ring::after {
+    width: 50px;
+    height: 50px;
+  }
+
+  .timer-ring strong {
+    font-size: 1.9rem;
   }
 }
 
