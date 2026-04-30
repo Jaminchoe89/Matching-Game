@@ -1,7 +1,7 @@
 const TURN_LENGTH = 30;
 const CARD_COUNT = 12;
-const PAIR_COUNT = CARD_COUNT / 2;
 const CARD_BACK_IMAGE = "./assets/cards/Back.png";
+const SOUND_VOLUME_MULTIPLIER = 12;
 const CARD_FACE_IMAGES = [
   "./assets/cards/Front 1.png",
   "./assets/cards/Front 2.png",
@@ -29,6 +29,7 @@ const cardTemplate = document.querySelector("#card-template");
 const timerRing = document.querySelector(".timer-ring");
 const gameOverlay = document.querySelector("#game-overlay");
 const overlayMessage = document.querySelector("#overlay-message");
+const overlayInstructions = document.querySelector("#overlay-instructions");
 const overlayButton = document.querySelector("#overlay-button");
 let audioContext;
 
@@ -99,7 +100,10 @@ function playTone({
   filterNode.frequency.setValueAtTime(2400, start);
   filterNode.Q.setValueAtTime(0.8, start);
   gainNode.gain.setValueAtTime(0.0001, start);
-  gainNode.gain.linearRampToValueAtTime(volume, start + attack);
+  gainNode.gain.linearRampToValueAtTime(
+    Math.min(volume * SOUND_VOLUME_MULTIPLIER, 0.7),
+    start + attack
+  );
   gainNode.gain.exponentialRampToValueAtTime(0.0001, end + release);
 
   oscillator.connect(filterNode);
@@ -137,6 +141,55 @@ function playTimesUpSound() {
   playTone({ frequency: 261.63, duration: 0.16, type: "sine", volume: 0.02, release: 0.14, startAt: 0.16 });
 }
 
+function playVictoryJingle() {
+  playTone({ frequency: 523.25, duration: 0.08, type: "triangle", volume: 0.028, release: 0.08 });
+  playTone({ frequency: 659.25, duration: 0.1, type: "triangle", volume: 0.03, release: 0.09, startAt: 0.09 });
+  playTone({ frequency: 783.99, duration: 0.1, type: "sine", volume: 0.032, release: 0.1, startAt: 0.18 });
+  playTone({ frequency: 1046.5, duration: 0.2, type: "sine", volume: 0.034, release: 0.14, startAt: 0.3 });
+  playTone({ frequency: 1318.51, duration: 0.18, type: "triangle", volume: 0.024, release: 0.12, startAt: 0.34 });
+  playTone({ frequency: 1174.66, duration: 0.15, type: "triangle", volume: 0.026, release: 0.11, startAt: 0.52 });
+  playTone({ frequency: 1318.51, duration: 0.16, type: "sine", volume: 0.028, release: 0.12, startAt: 0.64 });
+  playTone({ frequency: 1567.98, duration: 0.18, type: "triangle", volume: 0.03, release: 0.14, startAt: 0.78 });
+  playTone({ frequency: 2093, duration: 0.34, type: "sine", volume: 0.034, release: 0.18, startAt: 0.96 });
+  playTone({ frequency: 2637.02, duration: 0.28, type: "triangle", volume: 0.02, release: 0.16, startAt: 1.04 });
+}
+
+function playCountdownTick(secondsRemaining) {
+  if (secondsRemaining <= 0) {
+    return;
+  }
+
+  if (secondsRemaining > 5) {
+    playTone({
+      frequency: 420,
+      duration: 0.035,
+      type: "triangle",
+      volume: 0.012,
+      release: 0.035,
+    });
+    return;
+  }
+
+  const urgencyStep = 6 - secondsRemaining;
+  const baseFrequency = 640 + urgencyStep * 55;
+
+  playTone({
+    frequency: baseFrequency,
+    duration: 0.05,
+    type: "square",
+    volume: 0.018 + urgencyStep * 0.003,
+    release: 0.05,
+  });
+  playTone({
+    frequency: baseFrequency + 170,
+    duration: 0.035,
+    type: "triangle",
+    volume: 0.012 + urgencyStep * 0.002,
+    release: 0.04,
+    startAt: 0.045,
+  });
+}
+
 function startTimer() {
   window.clearInterval(state.timerHandle);
   state.timer = TURN_LENGTH;
@@ -153,7 +206,10 @@ function startTimer() {
     if (state.timer <= 0) {
       playTimesUpSound();
       finishGame("Time's up.");
+      return;
     }
+
+    playCountdownTick(state.timer);
   }, 1000);
 }
 
@@ -198,6 +254,7 @@ function showOverlay(buttonLabel, message = "") {
   window.clearTimeout(state.endOverlayHandle);
   overlayMessage.textContent = message;
   overlayMessage.hidden = !message;
+  overlayInstructions.hidden = Boolean(message);
   overlayButton.textContent = buttonLabel;
   gameOverlay.classList.remove("hidden");
 }
@@ -250,6 +307,7 @@ function checkForMatch() {
     const pairsLeft = state.cards.filter((card) => !card.matched).length / 2;
 
     if (pairsLeft === 0) {
+      playVictoryJingle();
       finishGame("Board cleared.");
       return;
     }

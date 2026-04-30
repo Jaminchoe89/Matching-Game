@@ -111,9 +111,8 @@ body::after {
   display: grid;
   place-items: center;
   padding: 18px;
-  background:
-    linear-gradient(180deg, rgba(1, 16, 43, 0.78), rgba(1, 16, 43, 0.88));
-  backdrop-filter: blur(6px);
+  background: rgba(1, 16, 43, 0.4);
+  backdrop-filter: blur(3px);
   transition: opacity 220ms ease, visibility 220ms ease;
 }
 
@@ -128,6 +127,12 @@ body::after {
   display: grid;
   justify-items: center;
   gap: 18px;
+  padding: 32px 30px 30px;
+  background: rgba(8, 22, 48, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  box-shadow: 0 14px 32px rgba(1, 16, 43, 0.14);
+  backdrop-filter: blur(18px);
 }
 
 .overlay-message {
@@ -138,6 +143,17 @@ body::after {
   line-height: 1.05;
   font-weight: 700;
   letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.overlay-instructions {
+  width: min(100%, 620px);
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  line-height: 1.45;
+  font-weight: 500;
   text-wrap: balance;
 }
 
