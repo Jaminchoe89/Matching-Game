@@ -16,6 +16,9 @@ const state = {
   timerHandle: null,
   flipBackHandle: null,
   endOverlayHandle: null,
+  musicHandle: null,
+  musicMode: null,
+  musicPhraseIndex: 0,
   cards: [],
   flippedIds: [],
   lockBoard: false,
@@ -28,6 +31,7 @@ const timerLabel = document.querySelector("#timer");
 const cardTemplate = document.querySelector("#card-template");
 const timerRing = document.querySelector(".timer-ring");
 const gameOverlay = document.querySelector("#game-overlay");
+const overlayLogo = document.querySelector("#overlay-logo");
 const overlayMessage = document.querySelector("#overlay-message");
 const overlayInstructions = document.querySelector("#overlay-instructions");
 const overlayButton = document.querySelector("#overlay-button");
@@ -48,8 +52,8 @@ function createDeck(cardCount) {
   const pairCount = cardCount / 2;
   const images = shuffle(CARD_FACE_IMAGES).slice(0, pairCount);
   const deck = images.flatMap((image, pairIndex) => [
-    { id: `${pairIndex}-a`, pairId: image, image, matched: false },
-    { id: `${pairIndex}-b`, pairId: image, image, matched: false },
+    { id: `${pairIndex}-a`, pairId: image, image, matched: false, justMatched: false },
+    { id: `${pairIndex}-b`, pairId: image, image, matched: false, justMatched: false },
   ]);
 
   return shuffle(deck);
@@ -155,18 +159,7 @@ function playVictoryJingle() {
 }
 
 function playCountdownTick(secondsRemaining) {
-  if (secondsRemaining <= 0) {
-    return;
-  }
-
-  if (secondsRemaining > 5) {
-    playTone({
-      frequency: 420,
-      duration: 0.035,
-      type: "triangle",
-      volume: 0.012,
-      release: 0.035,
-    });
+  if (secondsRemaining <= 0 || secondsRemaining > 5) {
     return;
   }
 
@@ -190,6 +183,113 @@ function playCountdownTick(secondsRemaining) {
   });
 }
 
+function playBackgroundMusicLoop(mode) {
+  if (!state.started || state.finished) {
+    return;
+  }
+
+  const phraseIndex = state.musicPhraseIndex;
+  state.musicPhraseIndex += 1;
+
+  if (mode === "urgent") {
+    if (phraseIndex % 2 === 0) {
+      playTone({ frequency: 130.81, duration: 0.16, type: "triangle", volume: 0.01, release: 0.09 });
+      playTone({ frequency: 261.63, duration: 0.08, type: "sine", volume: 0.009, release: 0.08, startAt: 0.02 });
+      playTone({ frequency: 329.63, duration: 0.08, type: "sine", volume: 0.0095, release: 0.08, startAt: 0.15 });
+      playTone({ frequency: 392, duration: 0.08, type: "sine", volume: 0.01, release: 0.08, startAt: 0.28 });
+      playTone({ frequency: 164.81, duration: 0.16, type: "triangle", volume: 0.0105, release: 0.09, startAt: 0.42 });
+      playTone({ frequency: 329.63, duration: 0.08, type: "sine", volume: 0.0095, release: 0.08, startAt: 0.44 });
+      playTone({ frequency: 392, duration: 0.08, type: "sine", volume: 0.01, release: 0.08, startAt: 0.57 });
+      playTone({ frequency: 493.88, duration: 0.08, type: "sine", volume: 0.0105, release: 0.08, startAt: 0.7 });
+      playTone({ frequency: 196, duration: 0.16, type: "triangle", volume: 0.011, release: 0.09, startAt: 0.84 });
+      playTone({ frequency: 392, duration: 0.08, type: "sine", volume: 0.01, release: 0.08, startAt: 0.86 });
+      playTone({ frequency: 493.88, duration: 0.08, type: "sine", volume: 0.0105, release: 0.08, startAt: 0.99 });
+      playTone({ frequency: 523.25, duration: 0.1, type: "sine", volume: 0.011, release: 0.09, startAt: 1.12 });
+    } else {
+      playTone({ frequency: 146.83, duration: 0.16, type: "triangle", volume: 0.0102, release: 0.09 });
+      playTone({ frequency: 293.66, duration: 0.08, type: "sine", volume: 0.0092, release: 0.08, startAt: 0.02 });
+      playTone({ frequency: 349.23, duration: 0.08, type: "sine", volume: 0.0098, release: 0.08, startAt: 0.15 });
+      playTone({ frequency: 440, duration: 0.08, type: "sine", volume: 0.0102, release: 0.08, startAt: 0.28 });
+      playTone({ frequency: 174.61, duration: 0.16, type: "triangle", volume: 0.0108, release: 0.09, startAt: 0.42 });
+      playTone({ frequency: 349.23, duration: 0.08, type: "sine", volume: 0.0098, release: 0.08, startAt: 0.44 });
+      playTone({ frequency: 440, duration: 0.08, type: "sine", volume: 0.0102, release: 0.08, startAt: 0.57 });
+      playTone({ frequency: 523.25, duration: 0.08, type: "sine", volume: 0.0108, release: 0.08, startAt: 0.7 });
+      playTone({ frequency: 220, duration: 0.16, type: "triangle", volume: 0.0112, release: 0.09, startAt: 0.84 });
+      playTone({ frequency: 440, duration: 0.08, type: "sine", volume: 0.0102, release: 0.08, startAt: 0.86 });
+      playTone({ frequency: 523.25, duration: 0.08, type: "sine", volume: 0.0108, release: 0.08, startAt: 0.99 });
+      playTone({ frequency: 587.33, duration: 0.1, type: "sine", volume: 0.0112, release: 0.09, startAt: 1.12 });
+    }
+
+    state.musicHandle = window.setTimeout(() => {
+      playBackgroundMusicLoop(mode);
+    }, 860);
+    return;
+  }
+
+  if (phraseIndex % 4 === 0) {
+    playTone({ frequency: 130.81, duration: 0.18, type: "triangle", volume: 0.0085, release: 0.12 });
+    playTone({ frequency: 261.63, duration: 0.12, type: "sine", volume: 0.007, release: 0.1, startAt: 0.04 });
+    playTone({ frequency: 329.63, duration: 0.12, type: "sine", volume: 0.0072, release: 0.1, startAt: 0.32 });
+    playTone({ frequency: 392, duration: 0.12, type: "sine", volume: 0.0074, release: 0.1, startAt: 0.6 });
+    playTone({ frequency: 164.81, duration: 0.18, type: "triangle", volume: 0.0088, release: 0.12, startAt: 0.88 });
+    playTone({ frequency: 329.63, duration: 0.12, type: "sine", volume: 0.0072, release: 0.1, startAt: 0.92 });
+    playTone({ frequency: 392, duration: 0.12, type: "sine", volume: 0.0074, release: 0.1, startAt: 1.2 });
+    playTone({ frequency: 523.25, duration: 0.14, type: "sine", volume: 0.0078, release: 0.11, startAt: 1.48 });
+  } else if (phraseIndex % 4 === 1) {
+    playTone({ frequency: 146.83, duration: 0.18, type: "triangle", volume: 0.0086, release: 0.12 });
+    playTone({ frequency: 293.66, duration: 0.12, type: "sine", volume: 0.0071, release: 0.1, startAt: 0.04 });
+    playTone({ frequency: 349.23, duration: 0.12, type: "sine", volume: 0.0073, release: 0.1, startAt: 0.32 });
+    playTone({ frequency: 440, duration: 0.12, type: "sine", volume: 0.0075, release: 0.1, startAt: 0.6 });
+    playTone({ frequency: 174.61, duration: 0.18, type: "triangle", volume: 0.0089, release: 0.12, startAt: 0.88 });
+    playTone({ frequency: 349.23, duration: 0.12, type: "sine", volume: 0.0073, release: 0.1, startAt: 0.92 });
+    playTone({ frequency: 440, duration: 0.12, type: "sine", volume: 0.0075, release: 0.1, startAt: 1.2 });
+    playTone({ frequency: 587.33, duration: 0.14, type: "sine", volume: 0.0079, release: 0.11, startAt: 1.48 });
+  } else if (phraseIndex % 4 === 2) {
+    playTone({ frequency: 130.81, duration: 0.18, type: "triangle", volume: 0.0085, release: 0.12 });
+    playTone({ frequency: 261.63, duration: 0.12, type: "sine", volume: 0.007, release: 0.1, startAt: 0.04 });
+    playTone({ frequency: 329.63, duration: 0.12, type: "sine", volume: 0.0072, release: 0.1, startAt: 0.32 });
+    playTone({ frequency: 392, duration: 0.12, type: "sine", volume: 0.0074, release: 0.1, startAt: 0.6 });
+    playTone({ frequency: 196, duration: 0.18, type: "triangle", volume: 0.009, release: 0.12, startAt: 0.88 });
+    playTone({ frequency: 392, duration: 0.12, type: "sine", volume: 0.0074, release: 0.1, startAt: 0.92 });
+    playTone({ frequency: 493.88, duration: 0.12, type: "sine", volume: 0.0076, release: 0.1, startAt: 1.2 });
+    playTone({ frequency: 659.25, duration: 0.14, type: "sine", volume: 0.008, release: 0.11, startAt: 1.48 });
+  } else {
+    playTone({ frequency: 123.47, duration: 0.18, type: "triangle", volume: 0.0084, release: 0.12 });
+    playTone({ frequency: 246.94, duration: 0.12, type: "sine", volume: 0.0069, release: 0.1, startAt: 0.04 });
+    playTone({ frequency: 329.63, duration: 0.12, type: "sine", volume: 0.0071, release: 0.1, startAt: 0.32 });
+    playTone({ frequency: 369.99, duration: 0.12, type: "sine", volume: 0.0073, release: 0.1, startAt: 0.6 });
+    playTone({ frequency: 164.81, duration: 0.18, type: "triangle", volume: 0.0088, release: 0.12, startAt: 0.88 });
+    playTone({ frequency: 329.63, duration: 0.12, type: "sine", volume: 0.0071, release: 0.1, startAt: 0.92 });
+    playTone({ frequency: 440, duration: 0.12, type: "sine", volume: 0.0075, release: 0.1, startAt: 1.2 });
+    playTone({ frequency: 493.88, duration: 0.14, type: "sine", volume: 0.0077, release: 0.11, startAt: 1.48 });
+  }
+
+  state.musicHandle = window.setTimeout(() => {
+    playBackgroundMusicLoop(mode);
+  }, 1960);
+}
+
+function stopBackgroundMusic() {
+  window.clearTimeout(state.musicHandle);
+  state.musicHandle = null;
+  state.musicMode = null;
+  state.musicPhraseIndex = 0;
+}
+
+function setBackgroundMusic(mode) {
+  if (!state.started || state.finished) {
+    return;
+  }
+
+  if (state.musicMode === mode && state.musicHandle) {
+    return;
+  }
+
+  stopBackgroundMusic();
+  state.musicMode = mode;
+  playBackgroundMusicLoop(mode);
+}
+
 function startTimer() {
   window.clearInterval(state.timerHandle);
   state.timer = TURN_LENGTH;
@@ -204,9 +304,14 @@ function startTimer() {
     updateTimer();
 
     if (state.timer <= 0) {
+      stopBackgroundMusic();
       playTimesUpSound();
       finishGame("Time's up.");
       return;
+    }
+
+    if (state.timer <= 5) {
+      setBackgroundMusic("urgent");
     }
 
     playCountdownTick(state.timer);
@@ -238,6 +343,10 @@ function renderBoard() {
       button.disabled = true;
     }
 
+    if (card.justMatched) {
+      button.classList.add("celebrate");
+    }
+
     if (state.flippedIds.includes(card.id)) {
       button.classList.add("flipped");
     }
@@ -254,6 +363,7 @@ function showOverlay(buttonLabel, message = "") {
   window.clearTimeout(state.endOverlayHandle);
   overlayMessage.textContent = message;
   overlayMessage.hidden = !message;
+  overlayLogo.hidden = Boolean(message);
   overlayInstructions.hidden = Boolean(message);
   overlayButton.textContent = buttonLabel;
   gameOverlay.classList.remove("hidden");
@@ -261,6 +371,11 @@ function showOverlay(buttonLabel, message = "") {
 
 function hideOverlay() {
   gameOverlay.classList.add("hidden");
+}
+
+function showIntroOverlay() {
+  resetBoard();
+  showOverlay("Start");
 }
 
 function resetBoard() {
@@ -273,6 +388,7 @@ function resetBoard() {
   window.clearInterval(state.timerHandle);
   window.clearTimeout(state.flipBackHandle);
   window.clearTimeout(state.endOverlayHandle);
+  stopBackgroundMusic();
   updateTimer();
   updateStatus();
 }
@@ -282,11 +398,12 @@ function finishGame(reason = "Nice run.") {
   state.started = false;
   window.clearInterval(state.timerHandle);
   window.clearTimeout(state.flipBackHandle);
+  stopBackgroundMusic();
   const matchedCards = state.cards.filter((card) => card.matched).length;
   showOverlay("Play Again", `Congratulations! You matched ${matchedCards} / ${CARD_COUNT} cards`);
   state.endOverlayHandle = window.setTimeout(() => {
     resetBoard();
-    showOverlay("Start Round");
+    showOverlay("Start");
   }, 5000);
 }
 
@@ -299,14 +416,19 @@ function checkForMatch() {
     playMatchSound();
     firstCard.matched = true;
     secondCard.matched = true;
+    firstCard.justMatched = true;
+    secondCard.justMatched = true;
     state.flippedIds = [];
     state.lockBoard = false;
 
     updateStatus();
+    firstCard.justMatched = false;
+    secondCard.justMatched = false;
 
     const pairsLeft = state.cards.filter((card) => !card.matched).length / 2;
 
     if (pairsLeft === 0) {
+      stopBackgroundMusic();
       playVictoryJingle();
       finishGame("Board cleared.");
       return;
@@ -370,11 +492,21 @@ function startGame(event) {
   state.started = true;
   hideOverlay();
   playStartSound();
+  setBackgroundMusic("normal");
   startTimer();
 }
 
-overlayButton.addEventListener("click", startGame);
+function handleOverlayButtonClick(event) {
+  if (overlayButton.textContent.trim() === "Play Again") {
+    event.preventDefault();
+    showIntroOverlay();
+    return;
+  }
+
+  startGame(event);
+}
+
+overlayButton.addEventListener("click", handleOverlayButtonClick);
 gameBoard.addEventListener("click", handleCardClick);
 
-resetBoard();
-showOverlay("Start Round");
+showIntroOverlay();

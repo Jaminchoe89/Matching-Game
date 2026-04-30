@@ -10,19 +10,25 @@
       href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400;8..144,500;8..144,600;8..144,700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260430a" />
+    <link rel="stylesheet" href="./styles.css?v=20260430k" />
   </head>
   <body>
     <main class="app-shell">
       <section class="game-card">
         <section class="game-overlay" id="game-overlay" aria-live="polite">
           <div class="overlay-panel">
+            <img
+              id="overlay-logo"
+              class="overlay-logo"
+              src="./1x/Logo White.png"
+              alt="Logo"
+            />
             <p id="overlay-message" class="overlay-message" hidden></p>
             <p id="overlay-instructions" class="overlay-instructions">
               Flip two cards at a time and match cards with the same image. Clear as many as you can before the 30-second timer runs out.
             </p>
             <button id="overlay-button" class="primary-button" type="button">
-              Start Round
+              Start
             </button>
           </div>
         </section>
@@ -52,6 +58,6 @@
       </button>
     </template>
 
-    <script src="./script.js?v=20260428j"></script>
+    <script src="./script.js?v=20260430i"></script>
   </body>
 </html>
