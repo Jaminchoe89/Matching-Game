@@ -395,12 +395,14 @@ function resetBoard() {
 }
 
 function buildEndMessage(matchedPairs) {
+  const pairLabel = matchedPairs === 1 ? "pair" : "pairs";
+
   if (matchedPairs >= TARGET_MATCHED_PAIRS) {
-    return `Well done! You matched ${matchedPairs} pairs and won a prize.`;
+    return `Well done! You matched ${matchedPairs} ${pairLabel} and won a prize.`;
   }
 
   if (matchedPairs >= 1) {
-    return `You matched ${matchedPairs} pairs. So close, thanks for playing!`;
+    return `You matched ${matchedPairs} ${pairLabel}. So close, thanks for playing!`;
   }
 
   return "You matched 0 pairs. Thanks for giving it a try!";
