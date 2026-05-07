@@ -472,6 +472,82 @@ body::after {
   }
 }
 
+@media (orientation: portrait) {
+  .game-card {
+    --stage-pad: 20px;
+    --board-gap: 14px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: var(--stage-pad);
+  }
+
+  .playfield {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    align-content: unset;
+  }
+
+  .hud {
+    flex: 1;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+  }
+
+  .hud h2 {
+    font-size: clamp(3rem, 8.5vw, 6.5rem);
+    text-align: center;
+    min-width: unset;
+    max-width: 100%;
+    line-height: 1.06;
+    letter-spacing: -0.025em;
+  }
+
+  .timer-ring {
+    min-width: 180px;
+    padding: 20px 28px;
+  }
+
+  .timer-ring::after {
+    width: 84px;
+    height: 84px;
+  }
+
+  .timer-ring strong {
+    font-size: 4.5rem;
+  }
+
+  .overlay-panel {
+    width: min(100%, 680px);
+    gap: 28px;
+    padding: 40px 36px 36px;
+  }
+
+  .overlay-logo {
+    width: min(100%, 440px);
+  }
+
+  .overlay-message {
+    font-size: clamp(2rem, 5.5vw, 4rem);
+  }
+
+  .overlay-instructions {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .game-overlay .primary-button {
+    min-height: 110px;
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

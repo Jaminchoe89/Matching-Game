@@ -413,12 +413,11 @@ function finishGame(reason = "Nice run.") {
   window.clearTimeout(state.flipBackHandle);
   stopBackgroundMusic();
   const matchedPairs = state.cards.filter((card) => card.matched).length / 2;
-  const prefix = matchedPairs >= TARGET_MATCHED_PAIRS ? "Congratulations!" : reason;
-  showOverlay("Play Again", `${prefix} ${buildEndMessage(matchedPairs)}`);
+  showOverlay("Play Again", buildEndMessage(matchedPairs));
   state.endOverlayHandle = window.setTimeout(() => {
     resetBoard();
     showOverlay("Start");
-  }, 5000);
+  }, 7000);
 }
 
 function checkForMatch() {
