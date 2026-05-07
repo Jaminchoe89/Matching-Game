@@ -492,12 +492,12 @@ body::after {
   }
 
   .hud h2 {
-    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-size: clamp(2rem, 5.5vw, 4rem);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
     min-width: 0;
-    max-width: calc(100% - 134px);
     line-height: 1.1;
   }
 
