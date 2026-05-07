@@ -425,6 +425,17 @@ body::after {
     gap: 16px;
   }
 
+  .hud {
+    gap: 10px;
+  }
+
+  .hud h2 {
+    min-width: calc((var(--card-width) * 3.2) + (var(--board-gap) * 2.2));
+    max-width: calc(100% - 96px);
+    font-size: clamp(2rem, 4.6vw, 3.4rem);
+    line-height: 0.98;
+  }
+
   .overlay-panel {
     width: 100%;
     padding: 26px 24px 22px;
@@ -438,6 +449,12 @@ body::after {
 
   .overlay-panel {
     padding: 22px 18px 18px;
+  }
+
+  .hud h2 {
+    min-width: calc((var(--card-width) * 3.1) + (var(--board-gap) * 2));
+    max-width: calc(100% - 88px);
+    font-size: clamp(1.9rem, 5.2vw, 2.6rem);
   }
 
   .timer-ring {

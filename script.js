@@ -441,7 +441,7 @@ function checkForMatch() {
 
     const matchedPairs = state.cards.filter((card) => card.matched).length / 2;
 
-    if (matchedPairs >= TARGET_MATCHED_PAIRS) {
+    if (matchedPairs === CARD_COUNT / 2) {
       stopBackgroundMusic();
       playVictoryJingle();
       finishGame("Congratulations!");
