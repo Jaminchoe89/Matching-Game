@@ -147,9 +147,9 @@ body::after {
   margin: 0;
   color: var(--white);
   text-align: center;
-  font-size: clamp(2rem, 4vw, 3.4rem);
-  line-height: 1.05;
-  font-weight: 700;
+  font-size: clamp(1.6rem, 3.2vw, 2.7rem);
+  line-height: 1.12;
+  font-weight: 600;
   letter-spacing: -0.02em;
   text-wrap: balance;
 }
@@ -242,7 +242,7 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 18px;
 }
 
 .playfield {
@@ -255,9 +255,14 @@ body::after {
 
 .hud h2 {
   margin: 0;
-  font-size: clamp(1.1rem, 2.1vw, 2.6rem);
+  flex: 0 1 auto;
+  min-width: calc((var(--card-width) * 3) + (var(--board-gap) * 2));
+  max-width: calc(100% - 140px);
+  font-size: clamp(1.55rem, 2.8vw, 3.25rem);
   font-weight: 600;
-  white-space: nowrap;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 .timer-ring {

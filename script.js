@@ -1,5 +1,6 @@
-const TURN_LENGTH = 30;
+const TURN_LENGTH = 20;
 const CARD_COUNT = 12;
+const TARGET_MATCHED_PAIRS = 3;
 const CARD_BACK_IMAGE = "./assets/cards/Back.png";
 const SOUND_VOLUME_MULTIPLIER = 12;
 const CARD_FACE_IMAGES = [
@@ -393,14 +394,27 @@ function resetBoard() {
   updateStatus();
 }
 
+function buildEndMessage(matchedPairs) {
+  if (matchedPairs >= TARGET_MATCHED_PAIRS) {
+    return `Well done! You matched ${matchedPairs} pairs and won a prize.`;
+  }
+
+  if (matchedPairs >= 1) {
+    return `You matched ${matchedPairs} pairs. So close, thanks for playing!`;
+  }
+
+  return "You matched 0 pairs. Thanks for giving it a try!";
+}
+
 function finishGame(reason = "Nice run.") {
   state.finished = true;
   state.started = false;
   window.clearInterval(state.timerHandle);
   window.clearTimeout(state.flipBackHandle);
   stopBackgroundMusic();
-  const matchedCards = state.cards.filter((card) => card.matched).length;
-  showOverlay("Play Again", `Congratulations! You matched ${matchedCards} / ${CARD_COUNT} cards`);
+  const matchedPairs = state.cards.filter((card) => card.matched).length / 2;
+  const prefix = matchedPairs >= TARGET_MATCHED_PAIRS ? "Congratulations!" : reason;
+  showOverlay("Play Again", `${prefix} ${buildEndMessage(matchedPairs)}`);
   state.endOverlayHandle = window.setTimeout(() => {
     resetBoard();
     showOverlay("Start");
@@ -425,12 +439,12 @@ function checkForMatch() {
     firstCard.justMatched = false;
     secondCard.justMatched = false;
 
-    const pairsLeft = state.cards.filter((card) => !card.matched).length / 2;
+    const matchedPairs = state.cards.filter((card) => card.matched).length / 2;
 
-    if (pairsLeft === 0) {
+    if (matchedPairs >= TARGET_MATCHED_PAIRS) {
       stopBackgroundMusic();
       playVictoryJingle();
-      finishGame("Board cleared.");
+      finishGame("Congratulations!");
       return;
     }
     return;
