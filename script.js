@@ -417,7 +417,7 @@ function finishGame(reason = "Nice run.") {
   state.endOverlayHandle = window.setTimeout(() => {
     resetBoard();
     showOverlay("Start");
-  }, 7000);
+  }, 5000);
 }
 
 function checkForMatch() {
