@@ -327,7 +327,6 @@ function updateTimer() {
 
 function renderBoard() {
   gameBoard.innerHTML = "";
-  gameBoard.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
 
   state.cards.forEach((card) => {
     const fragment = cardTemplate.content.cloneNode(true);
